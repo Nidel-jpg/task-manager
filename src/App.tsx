@@ -1,8 +1,14 @@
+// import { Navbar } from "./components/Navbar";
+// import { TaskCard } from "./components/TaskCard";
+
+import TaskForm from "./components/TaskForm";
+
 function App(){
   return(
     <div>
-      <h1>Task Manager</h1>
-      <p>Manage your tasks</p>
+      {/* <Navbar/>
+      <TaskCard/> */}
+      <TaskForm/>
     </div>
   )
 }
