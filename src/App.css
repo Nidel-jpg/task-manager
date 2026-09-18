@@ -1,0 +1,13 @@
+@keyframes searchSlide {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-search {
+  animation: searchSlide 0.4s ease-out;
+}

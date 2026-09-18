@@ -1,24 +1,53 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import type { Task } from "../types/tasks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface TaskFormProps{
-    onAddTask: (task:Task)=>void
+    onAddTask: (task:Task)=>void;
+    onEditTask: (updatedTask:Task)=>void
+    isEdited:boolean;
+    tasks: Task[]
   }
 
-const TaskForm = ({onAddTask}:TaskFormProps) => {
-
+const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
+    
     const navigate= useNavigate();
-  
+    const {id}= useParams();
+    const taskId= Number(id);
 
   const [title,setTitle]=useState("");
   const [description,setDescription]=useState("")
   const [priority, setPriority] = useState<Task["priority"]>("medium");
   const [dueDate,setDueDate]=useState("")
 
+  const task= tasks.find((task)=>task.id === taskId)
+
+    useEffect(()=>{
+      if (isEdited && task){
+        setTitle(task.title);
+        setDescription(task.description);
+        setPriority(task.priority);
+        setDueDate(task.dueDate)
+      }
+    }
+      ,[isEdited,task])
+
 
   const handleSubmit = (e:React.FormEvent)=>{
       e.preventDefault();
+
+      if(isEdited && task){
+        const updatedTask: Task = {
+          ...task,
+          title,
+          description,
+          priority,
+          dueDate,
+        };
+        onEditTask(updatedTask);
+        navigate("/tasks");
+        return;
+      }
 
       const newTask:Task={
         id:Date.now(),
@@ -43,7 +72,7 @@ const TaskForm = ({onAddTask}:TaskFormProps) => {
       className="flex w-120 flex-col gap-4 rounded-2xl border border-purple-200 bg-white p-8 shadow-lg">
 
         <h2 className="mb-4 text-center text-3xl font-bold text-purple-700">
-          Add a Task
+          {isEdited ? "Edit Task" : "Add a Task"}
         </h2>
 
         {/* Title */}
@@ -108,6 +137,7 @@ const TaskForm = ({onAddTask}:TaskFormProps) => {
         <input
           id="dueDate"
           value={dueDate}
+          type="date"
           onChange={(e)=>setDueDate(e.target.value)}
           placeholder="Write your title..."
           className="w-full resize-none rounded-xl border-2 border-purple-500 bg-white p-3 text-black placeholder-gray-400 outline-none transition duration-200 focus:border-purple-800 focus:ring-2 focus:ring-purple-200"
@@ -119,7 +149,7 @@ const TaskForm = ({onAddTask}:TaskFormProps) => {
           type="submit"
           className="mt-3 rounded-xl bg-purple-600 px-6 py-3 font-semibold text-white transition duration-200 hover:bg-purple-700 active:scale-95"
         >
-          Add Task
+          {isEdited ? "Save Changes" : "Add Task"}
         </button>
 
       </form>

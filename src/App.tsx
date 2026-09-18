@@ -1,11 +1,13 @@
 // import { Navbar } from "./components/Navbar";
 import { useState } from "react";
-import { Navbar } from "./components/Navbar";
+// import { Navbar } from "./components/Navbar";
 // import { TaskCard } from "./components/TaskCard";
-import TaskForm from "./components/TaskForm";
+// import TaskForm from "./components/TaskForm";
 import type { Task } from "./types/tasks";
-import { BrowserRouter,Routes,Route } from "react-router-dom";
-import {  Tasks } from "./components/Tasks";
+import { BrowserRouter } from "react-router-dom";
+// import {  Tasks } from "./components/Tasks";
+import AppContent from "./components/AppContent";
+import './App.css'
 // import TaskForm from "./components/TaskForm";
 
 function App(){
@@ -40,19 +42,22 @@ function App(){
   const addTask =(newTask:Task)=>{
         setTakes((previousTasks)=>[...previousTasks,newTask])
   }
+
+  const deleteTask = (id: number)=>{
+    setTakes((previousTasks)=>previousTasks.filter((task)=>task.id!==id))
+  }
+
+  const toggleTask= (id:number)=>{
+    setTakes((previousTasks)=>previousTasks.map((task)=>task.id === id? {...task,completed:!task.completed}:task))
+  }
+
+  const editTask=(updatedTask:Task)=>{
+      setTakes((previousTasks)=>previousTasks.map((task)=>task.id=== updatedTask.id ? updatedTask : task))
+  }
+
   return(
     <BrowserRouter>
-    <Navbar/>
-
-    <Routes>
-
-      <Route path="/tasks" element={<Tasks tasks={tasks} />}/>
-
-      <Route path="/add-task" element={<TaskForm onAddTask={addTask} /> }/>
-
-    </Routes>
-    
-    
+      <AppContent tasks={tasks} onAddTask={addTask} onDelete={deleteTask} onEditTask={editTask} onToggle={toggleTask} />
     
     </BrowserRouter>
   )
