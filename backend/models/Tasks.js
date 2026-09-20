@@ -1,5 +1,5 @@
 
-const mongoose = requrie("mongoose")
+const mongoose = require("mongoose")
 const taskSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -27,4 +27,4 @@ const taskSchema = new mongoose.Schema({
 })
 
 
-module.exports= mongoose.model("Task")
+module.exports= mongoose.model("Task",taskSchema)
