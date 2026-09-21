@@ -1,6 +1,7 @@
 
 const express= require("express");
 const mongoose=require("mongoose");
+const cors=require("cors");
 require("dotenv").config();
 const Task = require("./models/Tasks");
 
@@ -10,6 +11,14 @@ dns.setServers(["1.1.1.1","8.8.8.8"])
 const app=express();
 const PORT=3000;
 app.use(express.json())
+//just below this line, we are allowing our backend to accept requests from our frontend.
+app.use(cors());
+
+
+
+
+
+
 app.get("/", (req, res) => {
   res.send("Task Manager API is running!");
 });

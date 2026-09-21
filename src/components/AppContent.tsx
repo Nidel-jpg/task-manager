@@ -22,6 +22,13 @@ const AppContent = ({tasks, onDelete, onAddTask,onToggle,onEditTask}:Props) => {
         {location.pathname!== "/search" && <Navbar/>}
 
         <Routes>
+            <Route
+    path="/"
+    element={<Tasks tasks={tasks} onDelete={onDelete} onToggle={onToggle} />}
+  />
+
+
+
 
             <Route path="/tasks" element={<Tasks tasks={tasks} onDelete={onDelete} onToggle={onToggle}  />}/>
 

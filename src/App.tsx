@@ -1,7 +1,8 @@
 // import { Navbar } from "./components/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { Navbar } from "./components/Navbar";
 // import { TaskCard } from "./components/TaskCard";
+import axios from "axios";
 // import TaskForm from "./components/TaskForm";
 import type { Task } from "./types/tasks";
 import { BrowserRouter } from "react-router-dom";
@@ -38,6 +39,18 @@ function App(){
     },
   ])
 
+
+  useEffect(()=>{
+    axios.get("http://localhost:3000/api/tasks")
+    .then((response)=>{
+      console.log('API response', response.data)
+      setTakes(response.data)
+    })
+    .catch((error)=>{
+      console.error("Error fetching tasks:", error);
+    })
+
+}, []);
   
   const addTask =(newTask:Task)=>{
         setTakes((previousTasks)=>[...previousTasks,newTask])
