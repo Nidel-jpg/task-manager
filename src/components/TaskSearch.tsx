@@ -6,8 +6,8 @@ import { TaskCard } from "./TaskCard";
 interface SearchProps {
     tasks: Task[];
     
-    onDelete: (id:number)=>void;
-    onToggle: (id:number)=>void;
+    onDelete: (id:string)=>void;
+    onToggle: (id:string)=>void;
 }
 const TaskSearch = ({tasks,onToggle, onDelete}:SearchProps) => {
     const [search, setSearch]=useState("")

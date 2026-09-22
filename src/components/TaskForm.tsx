@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import axios from "axios";
 import type { Task } from "../types/tasks";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -13,14 +14,14 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
     
     const navigate= useNavigate();
     const {id}= useParams();
-    const taskId= Number(id);
+    
 
   const [title,setTitle]=useState("");
   const [description,setDescription]=useState("")
   const [priority, setPriority] = useState<Task["priority"]>("medium");
   const [dueDate,setDueDate]=useState("")
 
-  const task= tasks.find((task)=>task.id === taskId)
+  const task= tasks.find((task)=>task.id === id)
 
     useEffect(()=>{
       if (isEdited && task){
@@ -33,7 +34,7 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
       ,[isEdited,task])
 
 
-  const handleSubmit = (e:React.FormEvent)=>{
+  const handleSubmit = async (e:React.FormEvent)=>{
       e.preventDefault();
 
       if(isEdited && task){
@@ -49,16 +50,26 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
         return;
       }
 
-      const newTask:Task={
-        id:Date.now(),
-        title:title,
-        description:description,
-        priority:priority,
+      const newTask={
+        
+        title,
+        description,
+        priority,
         completed:false,
-        dueDate:dueDate,
+        dueDate,
       };
+      //Send the new task to the backend API using axios as req.body and receive the response from the backend API and call onAddTask with the response data to update the state in App.tsx
+      const response = await axios.post("http://localhost:3000/api/tasks",newTask)
       
-      onAddTask(newTask)
+      const createdTask: Task = {
+        ...response.data,
+        id: response.data._id, // Assuming the backend returns the new task with an _id field
+      };
+
+
+
+
+      onAddTask(createdTask);
       setTitle("");
       setDescription("");
       setPriority("medium");
