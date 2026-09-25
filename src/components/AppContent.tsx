@@ -8,6 +8,8 @@ import TaskSearch from "./TaskSearch";
 
 interface Props{
     tasks: Task[];
+    error:string;
+    loading:boolean;
     onDelete: (id:string)=>void;
     onAddTask: (newTask:Task)=>void;
     onEditTask:(updatedTask:Task)=>void;
@@ -15,7 +17,7 @@ interface Props{
     
 }
 
-const AppContent = ({tasks, onDelete, onAddTask,onToggle,onEditTask}:Props) => {
+const AppContent = ({tasks,error, onDelete, onAddTask,onToggle,onEditTask,loading}:Props) => {
     const location = useLocation();
   return (
     <>
@@ -23,9 +25,34 @@ const AppContent = ({tasks, onDelete, onAddTask,onToggle,onEditTask}:Props) => {
 
         <Routes>
             <Route
-    path="/"
-    element={<Tasks tasks={tasks} onDelete={onDelete} onToggle={onToggle} />}
-  />
+  path="/"
+  element={
+    loading ? (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-2xl font-semibold text-purple-700">
+          Loading tasks...
+        </p>
+      </div>
+    ):error ? (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-2xl font-semibold text-red-600">   
+          {error}
+        </p>
+      </div>
+          
+    )
+    
+    
+    
+    : (
+      <Tasks
+        tasks={tasks}
+        onDelete={onDelete}
+        onToggle={onToggle}
+      />
+    )
+  }
+/>
 
 
 

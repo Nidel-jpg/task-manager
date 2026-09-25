@@ -13,9 +13,10 @@ import './App.css'
 
 function App(){
  const [tasks, setTakes] = useState<Task[]>([]);
-
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   useEffect(()=>{
+    // Fetch tasks from the backend API when the component mounts
     axios.get("http://localhost:3000/api/tasks")
     .then((response)=>{
       console.log('API response', response.data)
@@ -29,7 +30,10 @@ function App(){
     })
     .catch((error)=>{
       console.error("Error fetching tasks:", error);
-    })
+      setError("Failed to fetch tasks. Please try again later.");
+    }).finally(() => {
+      setLoading(false);
+    });
 
 }, []);
   
@@ -72,7 +76,7 @@ function App(){
 
   return(
     <BrowserRouter>
-      <AppContent tasks={tasks} onAddTask={addTask} onDelete={deleteTask} onEditTask={editTask} onToggle={toggleTask} />
+      <AppContent tasks={tasks} onAddTask={addTask} onDelete={deleteTask} onEditTask={editTask} onToggle={toggleTask} loading={loading} error={error}/>
     
     </BrowserRouter>
   )
