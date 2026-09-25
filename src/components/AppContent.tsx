@@ -8,10 +8,10 @@ import TaskSearch from "./TaskSearch";
 
 interface Props{
     tasks: Task[];
-    onDelete: (id:number)=>void;
+    onDelete: (id:string)=>void;
     onAddTask: (newTask:Task)=>void;
     onEditTask:(updatedTask:Task)=>void;
-    onToggle:(id:number)=>void;
+    onToggle:(id:string)=>void;
     
 }
 

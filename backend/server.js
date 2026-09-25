@@ -54,6 +54,7 @@ app.get("/api/tasks/:id",async (req,res)=>{
 //Update a task:
 
 app.put("/api/tasks/:id",async (req,res)=>{
+  //Axios sent the updated task data in the request body, which we can access using req.body. We also have the task's ID in req.params.id, which we can use to find the specific task to update in the database.
   
   try{
     const updatedTask= await Task.findByIdAndUpdate(
@@ -103,7 +104,7 @@ app.delete("/api/tasks/:id",async (req,res)=>{
 
 
 
-//Receives client info and send it back to create a new model and save it  in mongoDB atlas through mongoose .
+//Receives client info and send it back as req.body to create a new model and save it  in mongoDB atlas through mongoose .
 
 app.post("/api/tasks",async (req,res)=>{
     try {

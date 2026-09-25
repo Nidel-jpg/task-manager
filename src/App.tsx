@@ -37,12 +37,33 @@ function App(){
         setTakes((previousTasks)=>[...previousTasks,newTask])
   }
 
-  const deleteTask = (id: string)=>{
+  const deleteTask = async (id: string)=>{
+    try {
+      //We first delete the task from the backend API using axios and then update the state in App.tsx
+        await axios.delete(`http://localhost:3000/api/tasks/${id}`);
     setTakes((previousTasks)=>previousTasks.filter((task)=>task.id!==id))
-  }
+  }catch(error){
+        console.error("Error deleting task:", error);
+    }
+}
 
-  const toggleTask= (id:string)=>{
-    setTakes((previousTasks)=>previousTasks.map((task)=>task.id === id? {...task,completed:!task.completed}:task))
+  const toggleTask= async(id:string)=>{
+    try {
+      const task= tasks.find((task)=>task.id === id);
+      if(!task) return;
+        const response = await axios.put(`http://localhost:3000/api/tasks/${id}`, { completed: !task.completed });
+      const updatedTask: Task= {
+
+         ...response.data,
+        id: response.data._id,
+
+      }
+      setTakes((previousTasks)=>previousTasks.map((task)=>task.id === id? updatedTask : task))
+      
+    } catch (error) {
+        console.error("Error toggling task:", error);
+    }
+    
   }
 
   const editTask=(updatedTask:Task)=>{

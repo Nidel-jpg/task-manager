@@ -38,16 +38,29 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
       e.preventDefault();
 
       if(isEdited && task){
-        const updatedTask: Task = {
-          ...task,
-          title,
-          description,
-          priority,
-          dueDate,
+        try {
+          const response = await axios.put(`http://localhost:3000/api/tasks/${task.id}`, {
+            title,
+            description,
+            priority,
+            dueDate,
+          });
+
+          //Our Backend is settled to return the updated task data in the response, which we can access using response.data. We can then create an updatedTask object that includes the updated task data along with the original task's ID, and call onEditTask with this object to update the state in App.tsx.
+
+          const updatedTask: Task = {
+            ...response.data,
+            id: response.data._id, // Assuming the backend returns the updated task with an _id field
+        
         };
         onEditTask(updatedTask);
         navigate("/tasks");
-        return;
+        return;  
+        } catch (error) {
+          console.error("Error updating task:", error);
+
+        }
+        
       }
 
       const newTask={

@@ -3,8 +3,8 @@ import type { Task } from "../types/tasks"
 
 interface TaskCardProps{
     task: Task;
-    onDelete: (id:number)=>void;
-    onToggle: (id:number)=>void;
+    onDelete: (id:string)=>void;
+    onToggle: (id:string)=>void;
     
 }
 export const TaskCard: React.FC<TaskCardProps> = ({task,onDelete,onToggle}) => {
