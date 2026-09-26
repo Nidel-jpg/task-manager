@@ -20,6 +20,7 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
   const [description,setDescription]=useState("")
   const [priority, setPriority] = useState<Task["priority"]>("medium");
   const [dueDate,setDueDate]=useState("")
+  const [formError, setFormError] = useState("")
 
   const task= tasks.find((task)=>task.id === id)
 
@@ -33,9 +34,20 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
     }
       ,[isEdited,task])
 
+    useEffect(()=>{
+      if (title.trim()&& description.trim()&& dueDate.trim()) {
+        setFormError("")
+      }
+    }, [title, description, dueDate])
 
   const handleSubmit = async (e:React.FormEvent)=>{
       e.preventDefault();
+      // Validate form fields(prevent submission if any field is empty)
+    if(!title.trim() || !description.trim() || !dueDate.trim()){
+      setFormError("Please fill in all fields.");
+      return;
+    }
+    setFormError("")
 
       if(isEdited && task){
         try {
@@ -92,9 +104,13 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center ">
+
+
       <form onSubmit={handleSubmit} 
       className="flex w-120 flex-col gap-4 rounded-2xl border border-purple-200 bg-white p-8 shadow-lg">
-
+        {formError && <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {formError}
+          </div>}
         <h2 className="mb-4 text-center text-3xl font-bold text-purple-700">
           {isEdited ? "Edit Task" : "Add a Task"}
         </h2>

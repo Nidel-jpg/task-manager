@@ -112,7 +112,7 @@ app.post("/api/tasks",async (req,res)=>{
 
       res.status(201).json(task);
     } catch (error) {
-      res.status(500).json({ message: "Failed to create task" });
+      res.status(400).json({ message: "Client put an invalid Task" });
     }
 })
 
