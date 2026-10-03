@@ -41,12 +41,17 @@ app.get("/api/tasks", async (req, res) => {
 //Get one Task By it's proper Id:
 app.get("/api/tasks/:id",async (req,res)=>{
   try {
+    
     const task= await Task.findById(req.params.id);
+    if (!task ) {
+      return res.status(404).json({ message: "Task not found" });
+    }
+
 
 
     res.json(task);
   } catch (error) {
-     res.status(500).json({ message: "Failed to fetch task" });
+     res.status(404).json({ message: "Task not found" });
   }
 })
 
@@ -64,18 +69,22 @@ app.put("/api/tasks/:id",async (req,res)=>{
     req.body,
     //This tells MongoDB:
     //"What changes should I make?"
-    {new:true}
+    {new:true, runValidators:true}
     //"After updating the task, give me the new/updated version of the task."
     //Without { new: true }, Mongoose's default behavior returns the old version of the document.
 
   );
+  if (!updatedTask) {
+    return res.status(404).json({ message: "Task not found" });
+  }
   res.json(updatedTask)
   }
 
   catch (error) {
-    //Internal Server Error
-   res.status(500).json({
-    message: "Failed to update task"
+    //Internal Server Error 500
+    //Client sent invalid data 400 from the frontend, so we send a 400 Bad Request response with a message indicating that the task data is invalid.
+   res.status(400).json({
+    message: "Invalid task data"
    })
 }
 

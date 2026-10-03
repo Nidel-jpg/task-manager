@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 // import { Navbar } from "./components/Navbar";
 // import { TaskCard } from "./components/TaskCard";
-import axios from "axios";
+import api from "./api/axios";
 // import TaskForm from "./components/TaskForm";
 import type { Task } from "./types/tasks";
 import { BrowserRouter } from "react-router-dom";
@@ -17,7 +17,7 @@ function App(){
   const [error, setError] = useState("");
   useEffect(()=>{
     // Fetch tasks from the backend API when the component mounts
-    axios.get("http://localhost:3000/api/tasks")
+    api.get("/api/tasks")
     .then((response)=>{
       console.log('API response', response.data)
       //Map the response data to match the Task interface, converting _id to id
@@ -44,7 +44,7 @@ function App(){
   const deleteTask = async (id: string)=>{
     try {
       //We first delete the task from the backend API using axios and then update the state in App.tsx
-        await axios.delete(`http://localhost:3000/api/tasks/${id}`);
+        await api.delete(`/api/tasks/${id}`);
     setTakes((previousTasks)=>previousTasks.filter((task)=>task.id!==id))
   }catch(error){
         console.error("Error deleting task:", error);
@@ -55,7 +55,7 @@ function App(){
     try {
       const task= tasks.find((task)=>task.id === id);
       if(!task) return;
-        const response = await axios.put(`http://localhost:3000/api/tasks/${id}`, { completed: !task.completed });
+        const response = await api.put(`/api/tasks/${id}`, { completed: !task.completed });
       const updatedTask: Task= {
 
          ...response.data,

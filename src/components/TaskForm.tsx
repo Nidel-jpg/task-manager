@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios";
+import api from "../api/axios";
 import type { Task } from "../types/tasks";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -7,10 +8,10 @@ interface TaskFormProps{
     onAddTask: (task:Task)=>void;
     onEditTask: (updatedTask:Task)=>void
     isEdited:boolean;
-    tasks: Task[]
+    
   }
 
-const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
+const TaskForm = ({onAddTask,onEditTask,isEdited}:TaskFormProps) => {
     
     const navigate= useNavigate();
     const {id}= useParams();
@@ -22,17 +23,43 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
   const [dueDate,setDueDate]=useState("")
   const [formError, setFormError] = useState("")
 
-  const task= tasks.find((task)=>task.id === id)
-
-    useEffect(()=>{
-      if (isEdited && task){
-        setTitle(task.title);
-        setDescription(task.description);
-        setPriority(task.priority);
-        setDueDate(task.dueDate)
-      }
+  //const task= tasks.find((task)=>task.id === id)
+  // 
+  useEffect(()=>{
+    if(!isEdited || !id) return;
+    api.get(`/api/tasks/${id}`)
+    .then((response)=>{
+      const task:Task=response.data;
+      setTitle(task.title);
+      setDescription(task.description);
+      setPriority(task.priority);
+      setDueDate(task.dueDate)
+    })
+    .catch((error) => {
+  if (axios.isAxiosError(error)) {
+    if (error.response?.status === 404) {
+      setFormError("Task not found.");
+    } else {
+      setFormError("Failed to load task.");
     }
-      ,[isEdited,task])
+  } else {
+    setFormError("Something went wrong.");
+  }
+});;
+}, [isEdited, id]);
+
+
+
+
+    //useEffect(()=>{
+      //if (isEdited && task){
+        //setTitle(task.title);
+        //setDescription(task.description);
+        //setPriority(task.priority);
+        //setDueDate(task.dueDate)
+      //}
+    //}
+    //  ,[isEdited,task])
 
     useEffect(()=>{
       if (title.trim()&& description.trim()&& dueDate.trim()) {
@@ -49,9 +76,9 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
     }
     setFormError("")
 
-      if(isEdited && task){
+      if(isEdited ){
         try {
-          const response = await axios.put(`http://localhost:3000/api/tasks/${task.id}`, {
+          const response = await api.put(`/api/tasks/${id}`, {
             title,
             description,
             priority,
@@ -69,9 +96,21 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
         navigate("/tasks");
         return;  
         } catch (error) {
-          console.error("Error updating task:", error);
+           console.log("PUT ERROR:", error);
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 404) {
+        setFormError("Task not found.");
+      }
+      //Status is about:
+       else {
+        setFormError("Failed to update task.");
+      }
+    } else {
+      setFormError("Something went wrong.");
+    }
 
-        }
+    return;
+  }
         
       }
 
@@ -84,7 +123,7 @@ const TaskForm = ({onAddTask,onEditTask,isEdited,tasks}:TaskFormProps) => {
         dueDate,
       };
       //Send the new task to the backend API using axios as req.body and receive the response from the backend API and call onAddTask with the response data to update the state in App.tsx
-      const response = await axios.post("http://localhost:3000/api/tasks",newTask)
+      const response = await api.post("/api/tasks",newTask)
       
       const createdTask: Task = {
         ...response.data,

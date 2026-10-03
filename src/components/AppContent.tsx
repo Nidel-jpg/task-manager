@@ -59,9 +59,9 @@ const AppContent = ({tasks,error, onDelete, onAddTask,onToggle,onEditTask,loadin
 
             <Route path="/tasks" element={<Tasks tasks={tasks} onDelete={onDelete} onToggle={onToggle}  />}/>
 
-            <Route path="/add-task" element={<TaskForm onAddTask={onAddTask} isEdited={false} onEditTask={onEditTask} tasks={tasks}/> }/>
+            <Route path="/add-task" element={<TaskForm onAddTask={onAddTask} isEdited={false} onEditTask={onEditTask} /> }/>
 
-            <Route path="/tasks/edit/:id" element={<TaskForm onEditTask={onEditTask} tasks={tasks} onAddTask={onAddTask} isEdited={true} />} />
+            <Route path="/tasks/edit/:id" element={<TaskForm onEditTask={onEditTask}  onAddTask={onAddTask} isEdited={true} />} />
 
 
             <Route path="/search" element={<TaskSearch tasks={tasks} onDelete={onDelete} onToggle={onToggle}/>} />
