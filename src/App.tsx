@@ -9,6 +9,7 @@ import { BrowserRouter } from "react-router-dom";
 // import {  Tasks } from "./components/Tasks";
 import AppContent from "./components/AppContent";
 import './App.css'
+import { getTasks } from "./api/tasks";
 // import TaskForm from "./components/TaskForm";
 
 function App(){
@@ -17,7 +18,7 @@ function App(){
   const [error, setError] = useState("");
   useEffect(()=>{
     // Fetch tasks from the backend API when the component mounts
-    api.get("/api/tasks")
+    getTasks()
     .then((response)=>{
       console.log('API response', response.data)
       //Map the response data to match the Task interface, converting _id to id

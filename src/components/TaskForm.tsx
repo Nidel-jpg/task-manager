@@ -3,7 +3,7 @@ import axios from "axios";
 import api from "../api/axios";
 import type { Task } from "../types/tasks";
 import { useNavigate, useParams } from "react-router-dom";
-
+import {createTask,updateTask} from "../api/tasks"
 interface TaskFormProps{
     onAddTask: (task:Task)=>void;
     onEditTask: (updatedTask:Task)=>void
@@ -78,7 +78,7 @@ const TaskForm = ({onAddTask,onEditTask,isEdited}:TaskFormProps) => {
 
       if(isEdited ){
         try {
-          const response = await api.put(`/api/tasks/${id}`, {
+          const response = await updateTask(id, {
             title,
             description,
             priority,
@@ -123,7 +123,8 @@ const TaskForm = ({onAddTask,onEditTask,isEdited}:TaskFormProps) => {
         dueDate,
       };
       //Send the new task to the backend API using axios as req.body and receive the response from the backend API and call onAddTask with the response data to update the state in App.tsx
-      const response = await api.post("/api/tasks",newTask)
+
+      const response = await createTask(newTask);
       
       const createdTask: Task = {
         ...response.data,
