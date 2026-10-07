@@ -2,14 +2,14 @@
 import { useEffect, useState } from "react";
 // import { Navbar } from "./components/Navbar";
 // import { TaskCard } from "./components/TaskCard";
-import api from "./api/axios";
+
 // import TaskForm from "./components/TaskForm";
 import type { Task } from "./types/tasks";
 import { BrowserRouter } from "react-router-dom";
 // import {  Tasks } from "./components/Tasks";
 import AppContent from "./components/AppContent";
 import './App.css'
-import { getTasks } from "./api/tasks";
+import { toggleTask as toggleTaskApi, deleteTask as deleteTaskApi,  getTasks } from "./api/tasks";
 // import TaskForm from "./components/TaskForm";
 
 function App(){
@@ -45,8 +45,8 @@ function App(){
   const deleteTask = async (id: string)=>{
     try {
       //We first delete the task from the backend API using axios and then update the state in App.tsx
-        await api.delete(`/api/tasks/${id}`);
-    setTakes((previousTasks)=>previousTasks.filter((task)=>task.id!==id))
+        await deleteTaskApi(id);
+        setTakes((previousTasks)=>previousTasks.filter((task)=>task.id!==id))
   }catch(error){
         console.error("Error deleting task:", error);
     }
@@ -56,7 +56,7 @@ function App(){
     try {
       const task= tasks.find((task)=>task.id === id);
       if(!task) return;
-        const response = await api.put(`/api/tasks/${id}`, { completed: !task.completed });
+        const response = await toggleTaskApi(id, !task.completed);
       const updatedTask: Task= {
 
          ...response.data,

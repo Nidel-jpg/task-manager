@@ -1,8 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-//We can create an instance of axios with a base URL to avoid repeating the base URL in every request. This is especially useful if you have multiple API calls in your application.
 const api = axios.create({
-    baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:3000", // Replace with your backend API URL
 });
 
 export default api;
