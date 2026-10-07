@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios";
-import api from "../api/axios";
+
 import type { Task } from "../types/tasks";
 import { useNavigate, useParams } from "react-router-dom";
-import {createTask,updateTask} from "../api/tasks"
+import {createTask,updateTask,getTaskById} from "../api/tasks"
 interface TaskFormProps{
     onAddTask: (task:Task)=>void;
     onEditTask: (updatedTask:Task)=>void
@@ -27,7 +27,7 @@ const TaskForm = ({onAddTask,onEditTask,isEdited}:TaskFormProps) => {
   // 
   useEffect(()=>{
     if(!isEdited || !id) return;
-    api.get(`/api/tasks/${id}`)
+    getTaskById(id)
     .then((response)=>{
       const task:Task=response.data;
       setTitle(task.title);

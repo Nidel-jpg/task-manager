@@ -19,24 +19,7 @@ app.use(cors());
 
 
 
-app.get("/", (req, res) => {
-  res.send("Task Manager API is running!");
-});
-//Read Task collection from mongoDB atlas through model mongoose.
-app.get("/api/tasks", async (req, res) => {
-  
-  try {
-    const tasks= await Task.find();
-     
-
-    res.json(tasks);
-  } catch (error) {
-    res.status(500).json({message: "Failed to fetch tasks"})
-  }
-
-
-
-});
+app.get("/", );
 
 //Get one Task By it's proper Id:
 app.get("/api/tasks/:id",async (req,res)=>{
