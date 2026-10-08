@@ -4,92 +4,33 @@ const mongoose=require("mongoose");
 const cors=require("cors");
 require("dotenv").config();
 const Task = require("./models/Tasks");
-
-const dns= require("dns")
+const taskRoutes= require("./routes/taskRoutes");
+const dns= require("dns");
+//const { createTask } = require("./controllers/taskController");
 dns.setServers(["1.1.1.1","8.8.8.8"])
 
 const app=express();
 const PORT=3000;
 app.use(express.json())
+
 //just below this line, we are allowing our backend to accept requests from our frontend.
 app.use(cors());
 
-
-
-
+app.use("/api/tasks",taskRoutes)
 
 
 app.get("/", );
 
 //Get one Task By it's proper Id:
-app.get("/api/tasks/:id",async (req,res)=>{
-  try {
-    
-    const task= await Task.findById(req.params.id);
-    if (!task ) {
-      return res.status(404).json({ message: "Task not found" });
-    }
-
-
-
-    res.json(task);
-  } catch (error) {
-     res.status(404).json({ message: "Task not found" });
-  }
-})
+//app.get("/api/tasks/:id",getTask)
 
 
 //Update a task:
 
-app.put("/api/tasks/:id",async (req,res)=>{
-  //Axios sent the updated task data in the request body, which we can access using req.body. We also have the task's ID in req.params.id, which we can use to find the specific task to update in the database.
-  
-  try{
-    const updatedTask= await Task.findByIdAndUpdate(
-    req.params.id,
-    // This tells MongoDB:
-    //"Which task should I update?"
-    req.body,
-    //This tells MongoDB:
-    //"What changes should I make?"
-    {new:true, runValidators:true}
-    //"After updating the task, give me the new/updated version of the task."
-    //Without { new: true }, Mongoose's default behavior returns the old version of the document.
-
-  );
-  if (!updatedTask) {
-    return res.status(404).json({ message: "Task not found" });
-  }
-  res.json(updatedTask)
-  }
-
-  catch (error) {
-    //Internal Server Error 500
-    //Client sent invalid data 400 from the frontend, so we send a 400 Bad Request response with a message indicating that the task data is invalid.
-   res.status(400).json({
-    message: "Invalid task data"
-   })
-}
-
-
-}
-
-)
+//app.put("/api/tasks/:id", updateTask);
 
 // Delete a Task: 
-app.delete("/api/tasks/:id",async (req,res)=>{
-
-  try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id)
-    
-    res.json(deletedTask)
-  } catch (error) {
-    res.status(500).json({
-      message:"Failed to delete task"
-    })
-  }
-
-})
+//app.delete("/api/tasks/:id", deleteTask)
 
 
 
@@ -98,15 +39,7 @@ app.delete("/api/tasks/:id",async (req,res)=>{
 
 //Receives client info and send it back as req.body to create a new model and save it  in mongoDB atlas through mongoose .
 
-app.post("/api/tasks",async (req,res)=>{
-    try {
-      const task= await Task.create(req.body);
-
-      res.status(201).json(task);
-    } catch (error) {
-      res.status(400).json({ message: "Client put an invalid Task" });
-    }
-})
+//app.post("/api/tasks", createTask);
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>{console.log("MongoDB connected")}
