@@ -35,7 +35,16 @@ const getTask=  async (req,res)=>{
 
 const createTask = async (req,res)=>{
     try {
-      const task= await Task.create(req.body);
+      const { completed, title, description, priority, dueDate } = req.body;
+
+      const task= await Task.create({
+        completed,
+        title,
+        description,
+        priority,
+        dueDate,
+        
+      });
 
       res.status(201).json(task);
     } catch (error) {
@@ -54,12 +63,18 @@ const updateTask = async (req,res)=>{
     if (!mongoose.isObjectIdOrHexString(req.params.id)) {
       return res.status(400).json({ message: "Invalid task ID" });
     }
-
+    const { completed, title, description, priority, dueDate } = req.body;
     const updatedTask= await Task.findByIdAndUpdate(
     req.params.id,
     // This tells MongoDB:
     //"Which task should I update?"
-    req.body,
+    {
+      completed,
+      title,
+      description,
+      priority,
+      dueDate
+    },
     //This tells MongoDB:
     //"What changes should I make?"
     {new:true, runValidators:true}
@@ -74,6 +89,7 @@ const updateTask = async (req,res)=>{
   }
 
   catch (error) {
+    console.error(error); // Log the error for debugging purposes
     if (error.name === "ValidationError" || error.name === "CastError") {
       return res.status(400).json({ message: "Invalid task data" });
     }
