@@ -5,6 +5,7 @@ const cors=require("cors");
 require("dotenv").config();
 const Task = require("./models/Tasks");
 const taskRoutes= require("./routes/taskRoutes");
+const authRoutes= require("./routes/authRoutes");
 const dns= require("dns");
 //const { createTask } = require("./controllers/taskController");
 dns.setServers(["1.1.1.1","8.8.8.8"])
@@ -17,7 +18,7 @@ app.use(express.json())
 app.use(cors());
 
 app.use("/api/tasks",taskRoutes)
-
+app.use("/api/auth",authRoutes)
 
 app.get("/", );
 
